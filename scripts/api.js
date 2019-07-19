@@ -22,9 +22,7 @@ const api = (function() {
   };
 
   const updateItem = function(id, updateData) {
-    const updateDataJSON = JSON.stringify({
-      updateData
-    });
+    const updateDataJSON = JSON.stringify(updateData);
     const options = {
       method: 'PATCH',
       headers: new Headers({
@@ -38,6 +36,6 @@ const api = (function() {
   return {
     getItems,
     createItem,
-    updateItem
+    updateItem,
   };
 })();
