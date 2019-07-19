@@ -33,9 +33,20 @@ const api = (function() {
     return fetch(BASE_URL + '/items/' + id, options);
   };
 
+  const deleteItem = function(id) {
+    const options = {
+      method: 'DELETE',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    };
+    return fetch(BASE_URL + '/items/' + id, options);
+  };
+
   return {
     getItems,
     createItem,
     updateItem,
+    deleteItem
   };
 })();
