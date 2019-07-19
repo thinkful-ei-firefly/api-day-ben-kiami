@@ -73,7 +73,7 @@ const shoppingList = (function() {
             store.addItem(item);
             render();
           } else {
-            throw new Error ('Must input a name.');
+            throw new Error('Must input a name.');
           }
         })
         .catch(err => console.log(err.message));
@@ -89,6 +89,8 @@ const shoppingList = (function() {
   function handleItemCheckClicked() {
     $('.js-shopping-list').on('click', '.js-item-toggle', event => {
       const id = getItemIdFromElement(event.currentTarget);
+      const checked = 
+      api.updateItem(id, { checked })
       store.findAndToggleChecked(id);
       render();
     });
@@ -113,7 +115,8 @@ const shoppingList = (function() {
       const itemName = $(event.currentTarget)
         .find('.shopping-item')
         .val();
-      store.findAndUpdateName(id, itemName);
+      api.updateItem(id, itemName);
+      store.findAndUpdate(id, itemName);
       store.setItemIsEditing(id, false);
       render();
     });
