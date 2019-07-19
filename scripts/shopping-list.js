@@ -69,9 +69,14 @@ const shoppingList = (function() {
         .createItem(newItemName)
         .then(res => res.json())
         .then(item => {
-          store.addItem(item);
-          render();
-        });
+          if (item.name !== undefined) {
+            store.addItem(item);
+            render();
+          } else {
+            throw new Error ('Must input a name.');
+          }
+        })
+        .catch(err => console.log(err.message));
     });
   }
 
