@@ -97,15 +97,21 @@ const shoppingList = (function() {
   }
 
   function handleDeleteItemClicked() {
-    // like in `handleItemCheckClicked`, we use event delegation
     $('.js-shopping-list').on('click', '.js-item-delete', event => {
       // get the index of the item in store.items
       const id = getItemIdFromElement(event.currentTarget);
       // delete the item
-      store.findAndDelete(id);
-      // render the updated shopping list
-      render();
-    });
+      api.deleteItem(id)
+        .then(res => {if (!res.ok){
+            throw new Error (res.status);
+          } return res.json();
+        })
+        .then(item => {
+          store.findAndDelete(id);
+          render();
+        })
+        .catch(error => showErrorMessage(error.message));
+      });
   }
 
   function handleEditShoppingItemSubmit() {
@@ -116,10 +122,17 @@ const shoppingList = (function() {
         .find('.shopping-item')
         .val();
       api.updateItem(id, itemName);
+      .then(res => {if(!res.ok) {
+      throw new Error (res.status);
+    }
+      return res.json();
+    });
+    .then((item) => {
       store.findAndUpdate(id, itemName);
       store.setItemIsEditing(id, false);
       render();
-    });
+    })
+    .catch(error => showErrorMessage(error.message))
   }
 
   function handleToggleFilterClick() {
@@ -145,6 +158,11 @@ const shoppingList = (function() {
     });
   }
 
+  function showErrorMessage(message){
+    $(''.error-message').show();
+    $('.error-message').text(`Error: $message.`);
+  }
+
   function bindEventListeners() {
     handleNewItemSubmit();
     handleItemCheckClicked();
@@ -153,11 +171,13 @@ const shoppingList = (function() {
     handleToggleFilterClick();
     handleShoppingListSearch();
     handleItemStartEditing();
+    showErrorMessage();
   }
 
   // This object contains the only exposed methods from this module:
   return {
     render: render,
-    bindEventListeners: bindEventListeners
+    bindEventListeners: bindEventListeners,
+    showErrorMessage: showErrorMessage
   };
 })();

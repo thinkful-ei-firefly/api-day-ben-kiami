@@ -1,6 +1,6 @@
 'use strict';
 
-const api = (function() {
+const api = function() {
   const BASE_URL = 'https://thinkful-list-api.herokuapp.com/ben-kiami';
 
   const getItems = function() {
@@ -32,10 +32,17 @@ const api = (function() {
     };
     return fetch(BASE_URL + '/items/' + id, options);
   };
+  const deleteItem = function(id) {
+    return fetch(`${BASE_URL}/items/${id}`,{
+      method:'DELETE',
+      headers: {'Content-Type' : 'applicatin/json'},
+    });
+  };
 
   return {
     getItems,
     createItem,
     updateItem,
+    deleteItem,
   };
-})();
+}();
