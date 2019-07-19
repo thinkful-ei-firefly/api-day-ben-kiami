@@ -53,8 +53,11 @@ const shoppingList = (function() {
     }
 
     if (store.error) {
-      $('.error').toggleClass('hidden');
-      $('.error').append(`<p>${store.error}</p>`);
+      if ($('.error').attr('class') === 'error hidden') {
+        $('.error').removeClass('hidden');
+      }
+      $('.error').empty();
+      $('.error').append(`<h2>Error!</h2><p>${store.error}</p>`);
     }
 
     // render the shopping list in the DOM
@@ -124,12 +127,18 @@ const shoppingList = (function() {
       const itemName = $(event.currentTarget)
         .find('.shopping-item')
         .val();
-      api.updateItem(id, { name: itemName }).then(() => {
-        console.log(id);
-        store.findAndUpdate(id, { name: itemName });
-        store.setItemIsEditing(id, false);
-        render();
-      });
+      api
+        .updateItem(id, { name: itemName })
+        .then(() => {
+          console.log(id);
+          store.findAndUpdate(id, { name: itemName });
+          store.setItemIsEditing(id, false);
+          render();
+        })
+        .catch(err => {
+          store.setError(err.message);
+          render();
+        });
     });
   }
 

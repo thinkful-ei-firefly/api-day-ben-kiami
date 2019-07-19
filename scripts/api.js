@@ -3,8 +3,26 @@
 const api = (function() {
   const BASE_URL = 'https://thinkful-list-api.herokuapp.com/ben-kiami';
 
+  const listApiFetch = function(...args) {
+    let error;
+    return fetch(...args)
+      .then(res => {
+        if (!res.ok) {
+          error = { code: res.status };
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (error) {
+          error.message = data.message;
+          return Promise.reject(error);
+        }
+        return data;
+      });
+  };
+
   const getItems = function() {
-    return fetch(BASE_URL + '/items');
+    return listApiFetch(BASE_URL + '/items');
   };
 
   const createItem = function(name) {
@@ -18,7 +36,7 @@ const api = (function() {
       }),
       body: newItem
     };
-    return fetch(BASE_URL + '/items/', options);
+    return listApiFetch(BASE_URL + '/items/', options);
   };
 
   const updateItem = function(id, updateData) {
@@ -30,7 +48,7 @@ const api = (function() {
       }),
       body: updateDataJSON
     };
-    return fetch(BASE_URL + '/items/' + id, options);
+    return listApiFetch(BASE_URL + '/items/' + id, options);
   };
 
   const deleteItem = function(id) {
