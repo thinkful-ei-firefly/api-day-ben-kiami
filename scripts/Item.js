@@ -2,8 +2,7 @@
 /* global cuid */
 
 // eslint-disable-next-line no-unused-vars
-const Item = (function(){
-
+const Item = (function() {
   const validateName = function(name) {
     if (!name) throw new TypeError('Name must not be blank');
   };
@@ -12,14 +11,12 @@ const Item = (function(){
     return {
       id: cuid(),
       name,
-      checked: false,
-      isEditing: false
+      checked: false
     };
   };
 
   return {
     validateName,
-    create,
+    create
   };
-  
-}());
+})();

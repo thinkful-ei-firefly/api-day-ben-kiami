@@ -1,5 +1,5 @@
 'use strict';
-/* global store, $, api */
+/* global store, api */
 
 // eslint-disable-next-line no-unused-vars
 const shoppingList = (function() {
@@ -52,6 +52,11 @@ const shoppingList = (function() {
       items = items.filter(item => item.name.includes(store.searchTerm));
     }
 
+    if (store.error) {
+      $('.error').toggleClass('hidden');
+      $('.error').append(`<p>${store.error}</p>`);
+    }
+
     // render the shopping list in the DOM
     console.log('`render` ran');
     const shoppingListItemsString = generateShoppingItemsString(items);
@@ -67,7 +72,6 @@ const shoppingList = (function() {
       $('.js-shopping-list-entry').val('');
       api
         .createItem(newItemName)
-        .then(res => res.json())
         .then(item => {
           if (item.name !== undefined) {
             store.addItem(item);
@@ -76,7 +80,10 @@ const shoppingList = (function() {
             throw new Error('Must input a name.');
           }
         })
-        .catch(err => console.log(err.message));
+        .catch(err => {
+          store.setError(err.message);
+          render();
+        });
     });
   }
 
@@ -117,15 +124,12 @@ const shoppingList = (function() {
       const itemName = $(event.currentTarget)
         .find('.shopping-item')
         .val();
-      api
-        .updateItem(id, {name: itemName})
-        .then(() => {
-          console.log(id);
-          store.findAndUpdate(id, {name: itemName});
-          store.setItemIsEditing(id, false);
-          render();
-        });
-        
+      api.updateItem(id, { name: itemName }).then(() => {
+        console.log(id);
+        store.findAndUpdate(id, { name: itemName });
+        store.setItemIsEditing(id, false);
+        render();
+      });
     });
   }
 
