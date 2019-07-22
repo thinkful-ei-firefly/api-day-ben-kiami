@@ -58,6 +58,9 @@ const shoppingList = (function() {
       }
       $('.error').empty();
       $('.error').append(`<h2>Error!</h2><p>${store.error}</p>`);
+    } else {
+      $('.error').empty();
+      $('.error').addClass('hidden');
     }
 
     // render the shopping list in the DOM
@@ -73,6 +76,7 @@ const shoppingList = (function() {
       event.preventDefault();
       const newItemName = $('.js-shopping-list-entry').val();
       $('.js-shopping-list-entry').val('');
+      store.setError(null);
       api
         .createItem(newItemName)
         .then(item => {
